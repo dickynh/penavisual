@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenaVisual - Laboratorium Virtual Kurikulum Merdeka</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --radius: 16px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; }
+
+        /* NAVIGATION */
+        nav { 
+            background: var(--white); padding: 16px 5%; display: flex; 
+            justify-content: space-between; align-items: center; position: sticky; 
+            top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+        .btn-login { 
+            background: var(--primary); color: white; padding: 8px 20px; 
+            border-radius: 8px; text-decoration: none; font-weight: 600; transition: 0.3s;
+        }
+        .btn-login:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        /* HERO SECTION */
+        .hero { 
+            padding: 80px 5% 60px; text-align: center; max-width: 900px; margin: 0 auto; 
+        }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; line-height: 1.2; color: var(--text-main); }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 32px; }
+        .hero-badges { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+        .badge { background: #dbeafe; color: var(--primary-dark); padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
+
+        /* SUBJECTS GRID */
+        .subjects-section { padding: 40px 5% 80px; }
+        .section-title { text-align: center; font-size: 2rem; margin-bottom: 40px; }
+        
+        .grid-container { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 24px; max-width: 1200px; margin: 0 auto; 
+        }
+
+        .subject-card { 
+            background: var(--white); border-radius: var(--radius); padding: 32px 24px; 
+            box-shadow: var(--shadow); transition: all 0.3s ease; cursor: pointer; 
+            border: 1px solid transparent; position: relative; overflow: hidden;
+        }
+        .subject-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); }
+        
+        .card-icon { 
+            width: 60px; height: 60px; border-radius: 12px; display: flex; 
+            align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 20px;
+        }
+        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; }
+        .card-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; min-height: 60px; }
+        
+        .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .tag { font-size: 0.75rem; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; color: var(--text-muted); }
+
+        .btn-start { 
+            display: block; width: 100%; text-align: center; padding: 12px; 
+            border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.2s;
+        }
+
+        /* Specific Card Colors */
+        .fisika .card-icon { background: #eff6ff; color: #2563eb; }
+        .fisika .btn-start { background: #eff6ff; color: #2563eb; }
+        .fisika .btn-start:hover { background: #2563eb; color: white; }
+
+        .kimia .card-icon { background: #fef3c7; color: #d97706; }
+        .kimia .btn-start { background: #fef3c7; color: #d97706; }
+        .kimia .btn-start:hover { background: #d97706; color: white; }
+
+        .matematika .card-icon { background: #fce7f3; color: #db2777; }
+        .matematika .btn-start { background: #fce7f3; color: #db2777; }
+        .matematika .btn-start:hover { background: #db2777; color: white; }
+
+        .informatika .card-icon { background: #ecfdf5; color: #059669; }
+        .informatika .btn-start { background: #ecfdf5; color: #059669; }
+        .informatika .btn-start:hover { background: #059669; color: white; }
+
+        .kka .card-icon { background: #f3e8ff; color: #7c3aed; }
+        .kka .btn-start { background: #f3e8ff; color: #7c3aed; }
+        .kka .btn-start:hover { background: #7c3aed; color: white; }
+
+        /* CURRICULUM INFO SECTION */
+        .curriculum-info { padding: 60px 5%; background: white; border-top: 1px solid #e2e8f0; }
+        .curriculum-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 24px; max-width: 1200px; margin: 40px auto 0; text-align: left; 
+        }
+        .curr-item { padding: 24px; background: #f8fafc; border-radius: 12px; border-left: 4px solid var(--primary); }
+        .curr-item h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 8px; }
+        .curr-item p { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* FOOTER */
+        footer { background: var(--white); padding: 40px 5%; text-align: center; border-top: 1px solid #e2e8f0; margin-top: 60px; }
+        .footer-dev { font-size: 0.9rem; color: var(--text-muted); margin-top: 16px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-links { display: none; }
+            .grid-container { grid-template-columns: 1fr; }
+            .curriculum-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <a href="#" class="logo">✒️ PenaVisual</a>
+        <div class="nav-links">
+            <a href="#mapel">Mata Pelajaran</a>
+            <a href="#kurikulum">Perangkat Ajar</a>
+            <a href="#tentang">Tentang</a>
+        </div>
+        <a href="#" class="btn-login">Masuk Guru</a>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Laboratorium Virtual Interaktif<br>Berbasis Kurikulum Merdeka</h1>
+        <p>Eksplorasi konsep sains, matematika, dan informatika melalui simulasi mendalam. Disusun khusus untuk Fase E SMK/SMA.</p>
+        <div class="hero-badges">
+            <span class="badge"> Inquiry Learning</span>
+            <span class="badge">📊 Real-time Data</span>
+            <span class="badge"> Berdiferensiasi</span>
+        </div>
+    </section>
+
+    <!-- SUBJECTS GRID -->
+    <section class="subjects-section" id="mapel">
+        <h2 class="section-title">Pilih Mata Pelajaran</h2>
+        <div class="grid-container">
+            
+            <!-- INFORMATIKA -->
+            <div class="subject-card informatika">
+                <div class="card-icon">💻</div>
+                <h3 class="card-title">Informatika</h3>
+                <p class="card-desc">Eksplorasi komponen komputer, sistem operasi, jaringan dasar (LAN/WAN), dan literasi digital perkantoran.</p>
+                <div class="card-tags">
+                    <span class="tag">Hardware</span>
+                    <span class="tag">Jaringan</span>
+                    <span class="tag">MS Word</span>
+                </div>
+                <a href="#" class="btn-start">Mulai Eksplorasi →</a>
+            </div>
+
+            <!-- KKA (KODING & AI) -->
+            <div class="subject-card kka">
+                <div class="card-icon">🤖</div>
+                <h3 class="card-title">Koding & AI (KKA)</h3>
+                <p class="card-desc">Bangun logika algoritma melalui block-coding visual dan pahami dasar kecerdasan artifisial secara interaktif.</p>
+                <div class="card-tags">
+                    <span class="tag">Algoritma</span>
+                    <span class="tag">Block Coding</span>
+                    <span class="tag">Machine Learning</span>
+                </div>
+                <a href="#" class="btn-start">Mulai Eksplorasi →</a>
+            </div>
+
+            <!-- FISIKA -->
+            <div class="subject-card fisika">
+                <div class="card-icon">⚛️</div>
+                <h3 class="card-title">Fisika</h3>
+                <p class="card-desc">Analisis fluida statis, massa jenis, dan tekanan hidrostatis dengan vektor gaya dan grafik real-time.</p>
+                <div class="card-tags">
+                    <span class="tag">Fluida</span>
+                    <span class="tag">Massa Jenis</span>
+                    <span class="tag">Vektor Gaya</span>
+                </div>
+                <a href="#" class="btn-start">Mulai Eksplorasi →</a>
+            </div>
+
+            <!-- MATEMATIKA -->
+            <div class="subject-card matematika">
+                <div class="card-icon"></div>
+                <h3 class="card-title">Matematika</h3>
+                <p class="card-desc">Visualisasi fungsi kuadrat, transformasi geometri, dan statistika data dalam lingkungan grafis dinamis.</p>
+                <div class="card-tags">
+                    <span class="tag">Fungsi Kuadrat</span>
+                    <span class="tag">Grafik</span>
+                    <span class="tag">Statistika</span>
+                </div>
+                <a href="#" class="btn-start">Mulai Eksplorasi →</a>
+            </div>
+
+            <!-- KIMIA -->
+            <div class="subject-card kimia">
+                <div class="card-icon">⚗️</div>
+                <h3 class="card-title">Kimia</h3>
+                <p class="card-desc">Jelajahi struktur atom, konfigurasi elektron, dan tabel periodik unsur dengan model partikel interaktif.</p>
+                <div class="card-tags">
+                    <span class="tag">Atom</span>
+                    <span class="tag">Periodik</span>
+                    <span class="tag">Ikatan</span>
+                </div>
+                <a href="#" class="btn-start">Mulai Eksplorasi →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CURRICULUM INFO SECTION -->
+    <section class="curriculum-info" id="kurikulum">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <h2 style="font-size: 2rem; margin-bottom: 16px; color: var(--text-main);">Lebih Dari Sekadar Simulasi</h2>
+            <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem;">
+                Setiap visualisasi di PenaVisual terintegrasi penuh dengan perangkat ajar Kurikulum Merdeka Fase E.
+            </p>
+            
+            <div class="curriculum-grid">
+                <div class="curr-item">
+                    <h3> Capaian Pembelajaran (CP)</h3>
+                    <p>Kompetensi inti yang harus dicapai peserta didik tersaji sebagai tujuan eksplorasi di setiap modul.</p>
+                </div>
+                <div class="curr-item">
+                    <h3> Alur Tujuan Pembelajaran (ATP)</h3>
+                    <p>Peta perjalanan belajar yang terstruktur dari konsep dasar hingga analisis kompleks.</p>
+                </div>
+                <div class="curr-item">
+                    <h3> Modul Ajar Berdiferensiasi</h3>
+                    <p>Panduan implementasi kelas dengan diferensiasi konten, proses, dan produk sesuai kebutuhan siswa.</p>
+                </div>
+                <div class="curr-item">
+                    <h3> LKPD Digital + Rubrik</h3>
+                    <p>Lembar kerja interaktif lengkap dengan rubrik penilaian autentik untuk asesmen formatif.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="tentang">
+        <div class="logo" style="justify-content: center; margin-bottom: 16px;">️ PenaVisual</div>
+        <p>Platform simulasi pendidikan Indonesia untuk pembelajaran abad 21.</p>
+        <div class="footer-dev">
+            Disusun oleh: <strong>Dicky Nofyan Hidayat, ST., Gr.</strong><br>
+            Sarjana Teknik & Guru Bersertifikasi
+        </div>
+        <p style="margin-top: 24px; font-size: 0.8rem; color: #94a3b8;">© 2026 PenaVisual. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
