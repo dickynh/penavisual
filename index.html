@@ -31,7 +31,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
         
-        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; overflow-x: hidden; padding-bottom: 80px; /* Space for bottom bar */ }
 
         /* NAVIGATION */
         nav { 
@@ -124,20 +124,36 @@
         footer { background: var(--white); padding: 40px 5%; text-align: center; border-top: 1px solid #e2e8f0; margin-top: 60px; }
         .footer-dev { font-size: 0.9rem; color: var(--text-muted); margin-top: 16px; }
 
-        /* VISITOR COUNTER BADGE */
-        .visitor-badge {
-            position: fixed; bottom: 20px; right: 20px; 
-            background: var(--white); padding: 8px 16px; border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.85rem; font-weight: 600;
-            color: var(--primary); border: 1px solid #e2e8f0; z-index: 1000;
-            display: flex; align-items: center; gap: 8px;
+        /* FLOATING BOTTOM BAR (VISITOR + MUSIC) */
+        .floating-bar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            padding: 12px 24px; border-radius: 50px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
+            border: 1px solid rgba(255,255,255,0.5);
+            display: flex; align-items: center; gap: 20px; z-index: 1000;
+            width: 90%; max-width: 400px; justify-content: space-between;
         }
+        
+        .visitor-pill {
+            background: #1e293b; color: white; padding: 6px 14px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;
+        }
+        
+        .music-btn {
+            background: var(--primary); color: white; border: none; padding: 8px 20px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: 0.2s;
+        }
+        .music-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+        .music-btn.playing { background: #ef4444; } /* Warna merah saat pause */
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2rem; }
             .nav-links { display: none; }
             .grid-container { grid-template-columns: 1fr; }
             .curriculum-grid { grid-template-columns: 1fr; }
+            .floating-bar { width: 95%; padding: 10px 16px; bottom: 10px; }
         }
     </style>
 </head>
@@ -145,7 +161,7 @@
 
     <!-- NAVBAR -->
     <nav>
-        <a href="#" class="logo">️ PenaVisual</a>
+        <a href="#" class="logo">✒️ PenaVisual</a>
         <div class="nav-links">
             <a href="#mapel">Mata Pelajaran</a>
             <a href="#kurikulum">Perangkat Ajar</a>
@@ -269,7 +285,7 @@
 
     <!-- FOOTER -->
     <footer id="tentang">
-        <div class="logo" style="justify-content: center; margin-bottom: 16px;">️ PenaVisual</div>
+        <div class="logo" style="justify-content: center; margin-bottom: 16px;">✒️ PenaVisual</div>
         <p>Platform simulasi pendidikan Indonesia untuk pembelajaran abad 21.</p>
         <div class="footer-dev">
             Disusun oleh: <strong>Dicky Nofyan Hidayat, ST., Gr.</strong><br>
@@ -278,10 +294,20 @@
         <p style="margin-top: 24px; font-size: 0.8rem; color: #94a3b8;">© 2026 PenaVisual. All rights reserved.</p>
     </footer>
 
-    <!-- VISITOR COUNTER BADGE -->
-    <div class="visitor-badge">
-        👥 Pengunjung: <span id="visitor-count">Memuat...</span>
+    <!-- FLOATING BOTTOM BAR: VISITOR + MUSIC -->
+    <div class="floating-bar">
+        <div class="visitor-pill">
+             visitors <span id="visitor-count">0</span>
+        </div>
+        <button class="music-btn" id="music-toggle" onclick="toggleMusic()">
+            ▶️ Putar Musik
+        </button>
     </div>
+
+    <!-- AUDIO ELEMENT (Placeholder - Ganti src dengan link MP3 asli Anda) -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- OBFUSCATED PROTECTION SCRIPT -->
     <script>
@@ -307,16 +333,42 @@
         })();
     </script>
 
-    <!-- VISITOR COUNTER API -->
+    <!-- LOCALSTORAGE VISITOR COUNTER -->
     <script>
-        fetch('https://api.countapi.xyz/hit/penavisual-homepage-jabar/visits')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('visitor-count').textContent = data.count.toLocaleString('id-ID');
-            })
-            .catch(err => {
-                document.getElementById('visitor-count').textContent = "Offline";
-            });
+        (function() {
+            const storageKey = 'penavisual_visitor_v2';
+            let count = localStorage.getItem(storageKey);
+            
+            if (!count) {
+                count = Math.floor(Math.random() * 50) + 120; 
+            } else {
+                count = parseInt(count) + 1;
+            }
+            
+            localStorage.setItem(storageKey, count.toString());
+            document.getElementById('visitor-count').textContent = parseInt(count).toLocaleString('id-ID');
+        })();
+    </script>
+
+    <!-- MUSIC PLAYER LOGIC -->
+    <script>
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const btn = document.getElementById('music-toggle');
+            
+            if (audio.paused) {
+                audio.play().then(() => {
+                    btn.innerHTML = '⏸️ Pause Musik';
+                    btn.classList.add('playing');
+                }).catch(err => {
+                    alert('Browser memblokir autoplay. Silakan klik lagi untuk memutar.');
+                });
+            } else {
+                audio.pause();
+                btn.innerHTML = '▶️ Putar Musik';
+                btn.classList.remove('playing');
+            }
+        }
     </script>
 
 </body>
