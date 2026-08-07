@@ -62,6 +62,17 @@
         .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: var(--primary-dark); }
         .page-subtitle { color: var(--text-muted); font-size: 1.1rem; }
 
+        /* Semester Tabs */
+        .semester-tabs { 
+            display: flex; gap: 8px; margin-bottom: 24px; background: white; 
+            padding: 4px; border-radius: 8px; width: fit-content; border: 1px solid #e2e8f0;
+        }
+        .sem-tab { 
+            padding: 8px 24px; border-radius: 6px; border: none; background: transparent; 
+            font-weight: 600; cursor: pointer; color: var(--text-muted); transition: 0.2s;
+        }
+        .sem-tab.active { background: var(--primary); color: white; }
+
         /* Card & Grid System */
         .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
         .card { 
@@ -90,10 +101,18 @@
             display: flex; align-items: center; justify-content: center; color: white;
         }
         
-        /* Rubric Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.9rem; }
-        th, td { padding: 12px; border: 1px solid #e2e8f0; text-align: left; }
-        th { background: #f8fafc; color: var(--primary-dark); font-weight: 600; }
+        /* Responsive Table Wrapper */
+        .table-responsive {
+            width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+            margin-bottom: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;
+        }
+        .table-responsive table {
+            width: 100%; min-width: 600px; border-collapse: collapse; white-space: nowrap;
+        }
+        .table-responsive th, .table-responsive td {
+            padding: 12px 16px; border: 1px solid #e2e8f0; text-align: left;
+        }
+        .table-responsive th { background: #f8fafc; color: var(--primary-dark); font-weight: 600; }
         
         /* Utility Classes */
         .hidden { display: none !important; }
@@ -111,6 +130,7 @@
             .nav-item { white-space: nowrap; width: auto; margin-bottom: 0; }
             .dev-profile { flex-direction: row; align-items: center; border-top: none; padding-top: 0; margin-top: 16px; }
             .grid-2 { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -144,17 +164,23 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
         
+        <!-- SEMESTER TABS -->
+        <div class="semester-tabs">
+            <button class="sem-tab active" onclick="switchSemester(1)">Semester 1 (Ganjil)</button>
+            <button class="sem-tab" onclick="switchSemester(2)">Semester 2 (Genap)</button>
+        </div>
+
         <!-- SECTION: CAPAIAN PEMBELAJARAN -->
         <section id="sec-cp" class="content-section">
             <div class="page-header">
                 <h1 class="page-title">Capaian Pembelajaran (CP)</h1>
-                <p class="page-subtitle">Fase E - Semester Ganjil | Informatika</p>
+                <p class="page-subtitle" id="cp-phase">Fase E - Semester Ganjil | Informatika</p>
             </div>
             <div class="card">
-                <h3>Elemen: Komputer & Literasi Komputasional</h3>
-                <p>Peserta didik mampu memahami komponen sistem komputer (hardware dan software), melakukan manajemen file dasar, serta menganalisis topologi dan jenis jaringan komputer (PAN, LAN, MAN, WAN). Peserta didik juga mampu mengonversikan sistem bilangan digital dan memanfaatkan perkakas teknologi digital untuk produktivitas.</p>
+                <h3 id="cp-element">Elemen: Komputer & Literasi Komputasional</h3>
+                <p id="cp-text">Peserta didik mampu memahami komponen sistem komputer (hardware dan software), melakukan manajemen file dasar, serta menganalisis topologi dan jenis jaringan komputer (PAN, LAN, MAN, WAN). Peserta didik juga mampu mengonversikan sistem bilangan digital dan memanfaatkan perkakas teknologi digital untuk produktivitas.</p>
                 
-                <div style="margin-top: 24px;">
+                <div style="margin-top: 24px;" id="cp-badges">
                     <span class="badge">System Komputer</span>
                     <span class="badge">Manajemen File</span>
                     <span class="badge">Topologi Jaringan</span>
@@ -173,30 +199,11 @@
         <section id="sec-atp" class="content-section hidden">
             <div class="page-header">
                 <h1 class="page-title">Alur Tujuan Pembelajaran (ATP)</h1>
-                <p class="page-subtitle">Semester Ganjil - Kelas X SMK/SMA</p>
+                <p class="page-subtitle" id="atp-phase">Semester Ganjil - Kelas X SMK/SMA</p>
             </div>
             <div class="card">
-                <h3>Peta Perjalanan Belajar (8 Minggu)</h3>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
-                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
-                        <strong>Minggu 1:</strong> Sejarah Komputer & Literasi Komputasional
-                    </div>
-                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
-                        <strong>Minggu 2:</strong> Komponen Hardware (Input, Process, Output)
-                    </div>
-                    <div style="padding: 16px; background: #ecfdf5; border-radius: 8px; border-left: 4px solid var(--primary); box-shadow: 0 0 0 2px var(--primary);">
-                        <strong>Minggu 3-4:</strong> Sistem Operasi & Manajemen File  <em>(Fokus Saat Ini)</em>
-                    </div>
-                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
-                        <strong>Minggu 5-6:</strong> Jaringan Dasar & Topologi (BUS, STAR, RING)
-                    </div>
-                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
-                        <strong>Minggu 7:</strong> Jenis Jaringan (PAN, LAN, MAN, WAN) & Sistem Bilangan
-                    </div>
-                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
-                        <strong>Minggu 8:</strong> Pemanfaatan Perkakas Digital (MS Word)
-                    </div>
-                </div>
+                <h3>Peta Perjalanan Belajar</h3>
+                <div id="atp-list" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;"></div>
             </div>
         </section>
 
@@ -204,22 +211,16 @@
         <section id="sec-modul" class="content-section hidden">
             <div class="page-header">
                 <h1 class="page-title">Modul Ajar Berdiferensiasi</h1>
-                <p class="page-subtitle">Topik: Sistem Operasi & Manajemen File</p>
+                <p class="page-subtitle" id="modul-topic">Topik: Sistem Operasi & Manajemen File</p>
             </div>
             <div class="grid-2">
                 <div class="card">
                     <h3>Komponen Inti</h3>
-                    <p><strong>Tujuan:</strong> Peserta didik mampu mengelola file dan folder menggunakan sistem operasi.<br>
-                    <strong>Media:</strong> Simulator Manajemen File Virtual + Video Tutorial<br>
-                    <strong>Durasi:</strong> 2 x 45 Menit</p>
+                    <p id="modul-inti"></p>
                 </div>
                 <div class="card">
                     <h3>Diferensiasi Proses</h3>
-                    <ul>
-                        <li><strong>Level Dasar:</strong> Melakukan cut, copy, paste, dan rename file dengan panduan langkah demi langkah.</li>
-                        <li><strong>Level Menengah:</strong> Mengorganisir file ke dalam struktur folder yang logis tanpa panduan.</li>
-                        <li><strong>Level Lanjut:</strong> Menganalisis efisiensi penyimpanan dan menerapkan shortcut keyboard untuk manajemen massal.</li>
-                    </ul>
+                    <ul id="modul-diff"></ul>
                 </div>
             </div>
         </section>
@@ -228,59 +229,24 @@
         <section id="sec-lkpd" class="content-section hidden">
             <div class="page-header">
                 <h1 class="page-title">LKPD Digital & Simulasi</h1>
-                <p class="page-subtitle">Eksplorasi Manajemen File & Konversi Sistem Bilangan</p>
+                <p class="page-subtitle" id="lkpd-title">Eksplorasi Manajemen File & Konversi Sistem Bilangan</p>
             </div>
 
             <!-- INTERACTIVE SIMULATION AREA -->
-            <div class="sim-container" id="sim-wrapper">
-                <div style="text-align: center; padding: 20px;">
-                    <h3 style="margin-bottom: 16px;">Simulator Konversi Sistem Bilangan</h3>
-                    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                        <input type="number" id="input-dec" placeholder="Desimal" style="padding: 10px; border-radius: 6px; border: none; width: 150px;">
-                        <button class="btn btn-primary" onclick="convertNumber()">Konversi</button>
-                    </div>
-                    <div id="result-box" style="margin-top: 24px; font-family: monospace; font-size: 1.2rem; line-height: 2;">
-                        Biner: <span id="res-bin" style="color: #4ade80;">-</span><br>
-                        Oktal: <span id="res-oct" style="color: #facc15;">-</span><br>
-                        Heksadesimal: <span id="res-hex" style="color: #60a5fa;">-</span>
-                    </div>
-                </div>
-            </div>
+            <div class="sim-container" id="sim-wrapper"></div>
 
             <!-- DIGITAL WORKSHEET FORM -->
             <div class="card">
                 <h3>Lembar Kerja Peserta Didik</h3>
-                <p>Gunakan simulator di atas atau lakukan praktik langsung di laboratorium komputer, lalu lengkapi tabel berikut.</p>
-                <div style="overflow-x: auto; margin: 16px 0;">
+                <p id="lkpd-instruction"></p>
+                <div class="table-responsive">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Aktivitas / Variabel</th>
-                                <th>Hasil Observasi / Jawaban</th>
-                                <th>Keterangan / Bukti</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Langkah mematikan komputer dengan benar</td>
-                                <td><input type="text" placeholder="Tuliskan langkah..." style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;"></td>
-                                <td>Screenshot / Foto</td>
-                            </tr>
-                            <tr>
-                                <td>Struktur folder yang dibuat</td>
-                                <td><input type="text" placeholder="Contoh: Dokumen/Tugas/Informatika" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;"></td>
-                                <td>Path direktori</td>
-                            </tr>
-                            <tr>
-                                <td>Konversi Bilangan Desimal 255</td>
-                                <td><input type="text" placeholder="Biner, Oktal, Hex" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;"></td>
-                                <td>Hasil Simulator</td>
-                            </tr>
-                        </tbody>
+                        <thead><tr><th>Aktivitas / Variabel</th><th>Hasil Observasi</th><th>Bukti</th></tr></thead>
+                        <tbody id="lkpd-tbody"></tbody>
                     </table>
                 </div>
-                <button class="btn btn-primary" onclick="alert('Data LKPD berhasil disimpan!')"> Simpan LKPD</button>
-                <button class="btn btn-outline" onclick="window.print()">️ Cetak PDF</button>
+                <button class="btn btn-primary" onclick="alert('Data LKPD berhasil disimpan!')">Simpan LKPD</button>
+                <button class="btn btn-outline" onclick="window.print()">🖨️ Cetak PDF</button>
             </div>
         </section>
 
@@ -288,52 +254,74 @@
         <section id="sec-rubrik" class="content-section hidden">
             <div class="page-header">
                 <h1 class="page-title">Rubrik Penilaian Autentik</h1>
-                <p class="page-subtitle">Asesmen Praktik Manajemen File & Literasi Digital</p>
+                <p class="page-subtitle" id="rubrik-phase">Asesmen Praktik Semester Ganjil</p>
             </div>
             <div class="card">
                 <h3>Rubrik Keterampilan Praktikum</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 30%;">Kriteria Penilaian</th>
-                            <th style="width: 23%;">Sangat Baik (4)</th>
-                            <th style="width: 23%;">Baik (3)</th>
-                            <th style="width: 24%;">Perlu Bimbingan (2)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Prosedur Shutdown</strong></td>
-                            <td>Melakukan shutdown sesuai SOP tanpa kesalahan dan menjelaskan alasannya.</td>
-                            <td>Melakukan shutdown sesuai SOP tanpa kesalahan.</td>
-                            <td>Melakukan shutdown namun perlu diingatkan atau ada langkah yang terlewat.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Manajemen File</strong></td>
-                            <td>Struktur folder sangat rapi, penamaan konsisten, dan menggunakan shortcut efektif.</td>
-                            <td>Struktur folder rapi dan penamaan file konsisten.</td>
-                            <td>Folder terbentuk namun penamaan acak atau struktur tidak logis.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Konversi Sistem Bilangan</strong></td>
-                            <td>Mampu mengonversi desimal ke biner, oktal, dan heksadesimal dengan tepat dan cepat.</td>
-                            <td>Mampu mengonversi dengan tepat namun membutuhkan waktu lama.</td>
-                            <td>Hasil konversi salah atau belum mampu melakukan konversi mandiri.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Pemanfaatan MS Word</strong></td>
-                            <td>Menguasai formatting, layout, dan fitur lanjutan secara mandiri.</td>
-                            <td>Mampu membuat dokumen standar dengan formatting dasar.</td>
-                            <td>Hanya mampu mengetik teks tanpa formatting yang berarti.</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th style="width:30%">Kriteria</th><th style="width:23%">Sangat Baik (4)</th><th style="width:23%">Baik (3)</th><th style="width:24%">Perlu Bimbingan (2)</th></tr></thead>
+                        <tbody id="rubrik-tbody"></tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
     </main>
 
     <script>
+        // --- DATA KURIKULUM PER SEMESTER ---
+        const semData = {
+            1: {
+                phase: "Fase E - Semester Ganjil",
+                cpElement: "Elemen: Komputer & Literasi Komputasional",
+                cpText: "Peserta didik mampu memahami komponen sistem komputer (hardware dan software), melakukan manajemen file dasar, serta menganalisis topologi dan jenis jaringan komputer. Peserta didik juga mampu mengonversikan sistem bilangan digital.",
+                badges: ["System Komputer", "Manajemen File", "Topologi Jaringan", "Sistem Bilangan"],
+                atp: [
+                    "Minggu 1: Sejarah Komputer & Literasi Komputasional",
+                    "Minggu 2: Komponen Hardware (Input, Process, Output)",
+                    "Minggu 3-4: Sistem Operasi & Manajemen File",
+                    "Minggu 5-6: Jaringan Dasar & Topologi (BUS, STAR, RING)",
+                    "Minggu 7: Jenis Jaringan (PAN, LAN, MAN, WAN) & Sistem Bilangan",
+                    "Minggu 8: Pemanfaatan Perkakas Digital (MS Word)"
+                ],
+                modulTopic: "Topik: Sistem Operasi & Manajemen File",
+                modulInti: "<strong>Tujuan:</strong> Peserta didik mampu mengelola file dan folder.<br><strong>Media:</strong> Simulator Manajemen File Virtual<br><strong>Durasi:</strong> 2 x 45 Menit",
+                modulDiff: "<li><strong>Level Dasar:</strong> Cut, copy, paste dengan panduan.</li><li><strong>Level Lanjut:</strong> Shortcut keyboard untuk manajemen massal.</li>",
+                lkpdTitle: "Eksplorasi Manajemen File & Konversi Sistem Bilangan",
+                lkpdInstruction: "Gunakan simulator konversi bilangan di atas, lalu lengkapi tabel observasi prosedur komputer.",
+                lkpdRows: `<tr><td>Langkah mematikan komputer (Shutdown)</td><td><input type="text" placeholder="Tuliskan langkah..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Screenshot/Foto</td></tr><tr><td>Struktur folder yang dibuat</td><td><input type="text" placeholder="Contoh: Dokumen/Tugas" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Path direktori</td></tr><tr><td>Konversi Desimal 255 ke Biner</td><td><input type="text" placeholder="Jawaban..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Hasil Simulator</td></tr>`,
+                rubrikPhase: "Asesmen Praktik Semester Ganjil",
+                rubrikRows: `<tr><td><strong>Prosedur Shutdown</strong></td><td>Sesuai SOP tanpa kesalahan & menjelaskan alasan.</td><td>Sesuai SOP tanpa kesalahan.</td><td>Perlu diingatkan / ada langkah terlewat.</td></tr><tr><td><strong>Manajemen File</strong></td><td>Struktur rapi, penamaan konsisten, pakai shortcut.</td><td>Struktur rapi & penamaan konsisten.</td><td>Folder terbentuk tapi penamaan acak.</td></tr><tr><td><strong>Konversi Sistem Bilangan</strong></td><td>Tepat & cepat (Biner, Oktal, Hex).</td><td>Tepat namun lambat.</td><td>Salah atau belum mandiri.</td></tr>`,
+                simType: "number-converter"
+            },
+            2: {
+                phase: "Fase E - Semester Genap",
+                cpElement: "Elemen: Literasi Digital & Berpikir Komputasional",
+                cpText: "Peserta didik mampu mengoperasikan aplikasi pengolah angka (Excel) termasuk fungsi aritmatika, teks, logika, lookup, dan pembuatan chart. Selain itu, peserta didik mampu memahami teori pengolahan data, algoritma pemrograman dasar, pseudocode, dan flowchart.",
+                badges: ["Microsoft Excel", "Fungsi Logika & Lookup", "Chart & Grafik", "PowerPoint", "Algoritma & Flowchart"],
+                atp: [
+                    "Minggu 1-2: Pengenalan Cell, Table & Fungsi Aritmatika (SUM, AVERAGE)",
+                    "Minggu 3: Fungsi Teks (LEFT, RIGHT, MID) & Logika (IF)",
+                    "Minggu 4: Fungsi Lookup (VLOOKUP, HLOOKUP)",
+                    "Minggu 5: Penerapan Chart dan Grafik Data",
+                    "Minggu 6: Pengoperasian Aplikasi Presentasi (PowerPoint)",
+                    "Minggu 7-8: Teori Pengolahan Data, Algoritma, Pseudocode & Flowchart"
+                ],
+                modulTopic: "Topik: Literasi Digital (Excel & Algoritma)",
+                modulInti: "<strong>Tujuan:</strong> Menguasai fungsi Excel lanjutan & menyusun algoritma dasar.<br><strong>Media:</strong> Spreadsheet Interaktif & Flowchart Builder<br><strong>Durasi:</strong> 4 x 45 Menit",
+                modulDiff: "<li><strong>Level Dasar:</strong> Menggunakan fungsi SUM, AVERAGE, IF tunggal.</li><li><strong>Level Lanjut:</strong> Nested IF, VLOOKUP antar sheet, & membuat flowchart kompleks.</li>",
+                lkpdTitle: "Praktikum Excel & Penyusunan Algoritma",
+                lkpdInstruction: "Selesaikan studi kasus pengolahan data nilai siswa menggunakan Excel, lalu buatlah flowchart untuk algoritma penentuan kelulusan.",
+                lkpdRows: `<tr><td>Fungsi untuk menghitung Rata-rata Nilai</td><td><input type="text" placeholder="Rumus Excel..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Screenshot Sheet</td></tr><tr><td>Fungsi IF untuk Keterangan Lulus/Tidak</td><td><input type="text" placeholder="Rumus IF..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Output Cell</td></tr><tr><td>Jenis Chart yang dipilih & Alasan</td><td><input type="text" placeholder="Contoh: Column Chart..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Grafik Terlampir</td></tr><tr><td>Simbol Flowchart untuk Keputusan</td><td><input type="text" placeholder="Jawaban..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Gambar Flowchart</td></tr>`,
+                rubrikPhase: "Asesmen Praktik Semester Genap",
+                rubrikRows: `<tr><td><strong>Fungsi Excel (Aritmatika & Teks)</strong></td><td>Semua rumus benar, efisien, & hasil akurat.</td><td>Rumus benar namun kurang efisien.</td><td>Banyak kesalahan sintaks rumus.</td></tr><tr><td><strong>Fungsi Logika & Lookup</strong></td><td>Nested IF & VLOOKUP berjalan sempurna.</td><td>IF tunggal benar, Lookup butuh bantuan.</td><td>Belum mampu menerapkan logika kondisi.</td></tr><tr><td><strong>Visualisasi Data (Chart)</strong></td><td>Chart sesuai jenis data, label lengkap, estetis.</td><td>Chart sesuai namun label kurang lengkap.</td><td>Jenis chart tidak sesuai dengan data.</td></tr><tr><td><strong>Algoritma & Flowchart</strong></td><td>Logika runtut, simbol standar ISO, mudah dibaca.</td><td>Logika benar namun simbol tidak standar.</td><td>Alur keputusan ambigu atau terputus.</td></tr>`,
+                simType: "excel-simulator"
+            }
+        };
+
+        let currentSem = 1;
+
         // --- NAVIGATION LOGIC ---
         function showSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
@@ -341,18 +329,108 @@
             
             document.querySelectorAll('.nav-group .nav-item').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+
+            if(sectionId === 'lkpd') renderSimulation();
         }
 
-        // --- SIMPLE NUMBER CONVERTER SIMULATION ---
+        function switchSemester(sem) {
+            currentSem = sem;
+            document.querySelectorAll('.sem-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const data = semData[sem];
+            
+            // Update CP
+            document.getElementById('cp-phase').textContent = data.phase + " | Informatika";
+            document.getElementById('cp-element').textContent = data.cpElement;
+            document.getElementById('cp-text').textContent = data.cpText;
+            document.getElementById('cp-badges').innerHTML = data.badges.map(b => `<span class="badge">${b}</span>`).join('');
+
+            // Update ATP
+            document.getElementById('atp-phase').textContent = data.phase.split('-')[0] + " - Kelas X SMK/SMA";
+            document.getElementById('atp-list').innerHTML = data.atp.map((item, i) => `
+                <div style="padding: 16px; background: ${i===2 || i===5 ? '#ecfdf5' : '#f8fafc'}; border-radius: 8px; border-left: 4px solid ${i===2 || i===5 ? 'var(--primary)' : '#cbd5e1'};">
+                    <strong>${item}</strong> ${i===2 || i===5 ? '<em>(Fokus Saat Ini)</em>' : ''}
+                </div>
+            `).join('');
+
+            // Update Modul
+            document.getElementById('modul-topic').textContent = data.modulTopic;
+            document.getElementById('modul-inti').innerHTML = data.modulInti;
+            document.getElementById('modul-diff').innerHTML = data.modulDiff;
+
+            // Update LKPD
+            document.getElementById('lkpd-title').textContent = data.lkpdTitle;
+            document.getElementById('lkpd-instruction').textContent = data.lkpdInstruction;
+            document.getElementById('lkpd-tbody').innerHTML = data.lkpdRows;
+
+            // Update Rubrik
+            document.getElementById('rubrik-phase').textContent = data.rubrikPhase;
+            document.getElementById('rubrik-tbody').innerHTML = data.rubrikRows;
+
+            // Re-render simulation if visible
+            if(!document.getElementById('sec-lkpd').classList.contains('hidden')) renderSimulation();
+        }
+
+        // --- SIMULATION RENDERER ---
+        function renderSimulation() {
+            const wrapper = document.getElementById('sim-wrapper');
+            if (semData[currentSem].simType === 'number-converter') {
+                wrapper.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="margin-bottom: 16px;">Simulator Konversi Sistem Bilangan</h3>
+                        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                            <input type="number" id="input-dec" placeholder="Masukkan Angka Desimal" style="padding: 10px; border-radius: 6px; border: none; width: 200px;">
+                            <button class="btn btn-primary" onclick="convertNumber()">Konversi</button>
+                        </div>
+                        <div id="result-box" style="margin-top: 24px; font-family: monospace; font-size: 1.2rem; line-height: 2;">
+                            Biner: <span id="res-bin" style="color: #4ade80;">-</span><br>
+                            Oktal: <span id="res-oct" style="color: #facc15;">-</span><br>
+                            Heksadesimal: <span id="res-hex" style="color: #60a5fa;">-</span>
+                        </div>
+                    </div>
+                `;
+            } else if (semData[currentSem].simType === 'excel-simulator') {
+                wrapper.innerHTML = `
+                    <div style="text-align: center; padding: 20px; width: 100%;">
+                        <h3 style="margin-bottom: 16px;">Mini Spreadsheet Simulator</h3>
+                        <div style="background: white; color: black; padding: 16px; border-radius: 8px; max-width: 400px; margin: 0 auto; text-align: left;">
+                            <div style="display: grid; grid-template-columns: 40px 1fr 1fr; gap: 4px; margin-bottom: 8px;">
+                                <div style="font-weight:bold; text-align:center;">#</div>
+                                <div style="font-weight:bold; text-align:center;">A (Nilai)</div>
+                                <div style="font-weight:bold; text-align:center;">B (Hasil)</div>
+                                
+                                <div style="text-align:center; background:#eee;">1</div>
+                                <input type="number" id="cell-a1" value="85" style="padding:4px; border:1px solid #ccc;">
+                                <div id="cell-b1" style="padding:4px; background:#f0fdf4; border:1px solid #059669;">=A1*2</div>
+                                
+                                <div style="text-align:center; background:#eee;">2</div>
+                                <input type="number" id="cell-a2" value="45" style="padding:4px; border:1px solid #ccc;">
+                                <div id="cell-b2" style="padding:4px; background:#f0fdf4; border:1px solid #059669;">=IF(A2>=75,"Lulus","Remedial")</div>
+                            </div>
+                            <button class="btn btn-primary" style="width:100%; margin-top:8px;" onclick="runExcelSim()">▶️ Jalankan Rumus</button>
+                        </div>
+                        <p style="margin-top:12px; font-size:0.9rem; opacity:0.8;">Coba ubah nilai di kolom A, lalu klik Jalankan Rumus!</p>
+                    </div>
+                `;
+            }
+        }
+
+        // --- SIMULATOR FUNCTIONS ---
         function convertNumber() {
             const dec = parseInt(document.getElementById('input-dec').value);
-            if (isNaN(dec)) {
-                alert("Masukkan angka desimal yang valid!");
-                return;
-            }
+            if (isNaN(dec)) { alert("Masukkan angka desimal yang valid!"); return; }
             document.getElementById('res-bin').textContent = dec.toString(2);
             document.getElementById('res-oct').textContent = dec.toString(8);
             document.getElementById('res-hex').textContent = dec.toString(16).toUpperCase();
+        }
+
+        function runExcelSim() {
+            const a1 = parseFloat(document.getElementById('cell-a1').value) || 0;
+            const a2 = parseFloat(document.getElementById('cell-a2').value) || 0;
+            
+            document.getElementById('cell-b1').textContent = "= " + (a1 * 2);
+            document.getElementById('cell-b2').textContent = a2 >= 75 ? "Lulus ✅" : "Remedial ⚠️";
         }
 
         // Initialize default view
