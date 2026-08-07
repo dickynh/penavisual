@@ -31,7 +31,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
         
-        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; overflow-x: hidden; padding-bottom: 80px; /* Space for bottom bar */ }
+        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; overflow-x: hidden; padding-bottom: 80px; }
 
         /* NAVIGATION */
         nav { 
@@ -138,15 +138,35 @@
         .visitor-pill {
             background: #1e293b; color: white; padding: 6px 14px; border-radius: 20px;
             font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;
         }
         
         .music-btn {
             background: var(--primary); color: white; border: none; padding: 8px 20px;
             border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; transition: 0.2s;
+            display: flex; align-items: center; gap: 8px; transition: 0.2s; flex-shrink: 0;
         }
         .music-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
-        .music-btn.playing { background: #ef4444; } /* Warna merah saat pause */
+        .music-btn.playing { background: #ef4444; }
+
+        /* MODAL KENALAN STYLES */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(4px); z-index: 2000; display: flex; 
+            align-items: center; justify-content: center; opacity: 1; transition: opacity 0.3s;
+        }
+        .modal-overlay.hidden { opacity: 0; pointer-events: none; }
+        .modal-card {
+            background: white; padding: 32px; border-radius: 16px; width: 90%; max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center; transform: translateY(0); transition: transform 0.3s;
+        }
+        .modal-overlay.hidden .modal-card { transform: translateY(20px); }
+        .modal-card h3 { margin-bottom: 8px; color: var(--primary-dark); }
+        .edit-name-btn {
+            background: none; border: none; cursor: pointer; font-size: 0.75rem; 
+            color: #94a3b8; text-decoration: underline; margin-left: 8px; opacity: 0.7;
+        }
+        .edit-name-btn:hover { opacity: 1; color: white; }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2rem; }
@@ -227,7 +247,7 @@
 
             <!-- MATEMATIKA -->
             <div class="subject-card matematika">
-                <div class="card-icon">📐</div>
+                <div class="card-icon"></div>
                 <h3 class="card-title">Matematika</h3>
                 <p class="card-desc">Visualisasi fungsi kuadrat, transformasi geometri, dan statistika data dalam lingkungan grafis dinamis.</p>
                 <div class="card-tags">
@@ -297,14 +317,27 @@
     <!-- FLOATING BOTTOM BAR: VISITOR + MUSIC -->
     <div class="floating-bar">
         <div class="visitor-pill">
-             visitors <span id="visitor-count">0</span>
+              <span id="visitor-count">Memuat...</span>
         </div>
         <button class="music-btn" id="music-toggle" onclick="toggleMusic()">
             ▶️ Putar Musik
         </button>
     </div>
 
-    <!-- AUDIO ELEMENT (Placeholder - Ganti src dengan link MP3 asli Anda) -->
+    <!-- MODAL KENALAN PERSONAL -->
+    <div id="greeting-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h3>👋 Halo, Rekan Guru!</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px;">
+                Siapa nama panggilan yang ingin kami gunakan untuk menyapamu?
+            </p>
+            <input type="text" id="user-name-input" placeholder="Contoh: Pak Budi / Bu Siti" 
+                   style="width:100%; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:16px; font-size:0.95rem; outline:none;">
+            <button class="btn-start" style="background:var(--primary); color:white;" onclick="saveUserName()">Mulai Eksplorasi</button>
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENT -->
     <audio id="bg-music" loop>
         <source src="joyinsound-inspiring-inspirational-398333.mp3" type="audio/mpeg">
     </audio>
@@ -333,11 +366,65 @@
         })();
     </script>
 
-    <!-- LOCALSTORAGE VISITOR COUNTER -->
+    <!-- INTEGRATED SCRIPT: VISITOR + GREETING + MUSIC -->
     <script>
-        (function() {
-            const storageKey = 'penavisual_visitor_v2';
-            let count = localStorage.getItem(storageKey);
+        // --- KONFIGURASI ---
+        const STORAGE_KEYS = {
+            visitor: 'penavisual_visitor_v2',
+            userName: 'penavisual_user_name_v1'
+        };
+
+        // --- FUNGSI SAPAAN PERSONAL ---
+        function initGreeting() {
+            const savedName = localStorage.getItem(STORAGE_KEYS.userName);
+            const modal = document.getElementById('greeting-modal');
+            const input = document.getElementById('user-name-input');
+            
+            if (!savedName) {
+                modal.classList.remove('hidden');
+                setTimeout(() => input.focus(), 100);
+            } else {
+                updateVisitorDisplay(savedName);
+            }
+
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') saveUserName();
+            });
+        }
+
+        function saveUserName() {
+            const input = document.getElementById('user-name-input');
+            const name = input.value.trim();
+            
+            if (!name) {
+                input.style.borderColor = '#ef4444';
+                input.placeholder = 'Nama tidak boleh kosong ya... ';
+                return;
+            }
+            
+            localStorage.setItem(STORAGE_KEYS.userName, name);
+            document.getElementById('greeting-modal').classList.add('hidden');
+            updateVisitorDisplay(name);
+        }
+
+        function updateVisitorDisplay(name) {
+            const hour = new Date().getHours();
+            let greeting = hour < 11 ? 'Selamat Pagi' : hour < 15 ? 'Selamat Siang' : hour < 18 ? 'Selamat Sore' : 'Selamat Malam';
+            
+            const visitorEl = document.getElementById('visitor-count');
+            visitorEl.innerHTML = `${greeting}, ${name}! 👋 <button class="edit-name-btn" onclick="resetUserName()" title="Ganti nama">ubah</button>`;
+        }
+
+        function resetUserName() {
+            if(confirm('Yakin ingin mengganti nama panggilan?')) {
+                localStorage.removeItem(STORAGE_KEYS.userName);
+                location.reload();
+            }
+        }
+
+        // --- FUNGSI VISITOR COUNTER NUMERIK (FALLBACK) ---
+        function initVisitorCounter() {
+            let count = localStorage.getItem(STORAGE_KEYS.visitor);
             
             if (!count) {
                 count = Math.floor(Math.random() * 50) + 120; 
@@ -345,13 +432,15 @@
                 count = parseInt(count) + 1;
             }
             
-            localStorage.setItem(storageKey, count.toString());
-            document.getElementById('visitor-count').textContent = parseInt(count).toLocaleString('id-ID');
-        })();
-    </script>
+            localStorage.setItem(STORAGE_KEYS.visitor, count.toString());
+            
+            // Hanya tampilkan angka jika belum ada nama personal
+            if (!localStorage.getItem(STORAGE_KEYS.userName)) {
+                document.getElementById('visitor-count').textContent = parseInt(count).toLocaleString('id-ID');
+            }
+        }
 
-    <!-- MUSIC PLAYER LOGIC -->
-    <script>
+        // --- FUNGSI MUSIC PLAYER ---
         function toggleMusic() {
             const audio = document.getElementById('bg-music');
             const btn = document.getElementById('music-toggle');
@@ -369,6 +458,12 @@
                 btn.classList.remove('playing');
             }
         }
+
+        // --- INISIALISASI SAAT LOAD ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initVisitorCounter();
+            initGreeting();
+        });
     </script>
 
 </body>
