@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKA (Koding & AI) Fase E - PenaVisual</title>
+    
+    <!-- PROTEKSI ANTI-COPY DASAR -->
+    <style>
+        /* Mencegah Seleksi Teks */
+        body { 
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            -webkit-touch-callout: none;
+        }
+        
+        /* Pengecualian untuk Input Form agar tetap bisa diketik */
+        input, textarea { 
+            -webkit-user-select: text !important; 
+            user-select: text !important; 
+        }
+
+        /* Mencegah Drag Gambar */
+        img { pointer-events: none; }
+    </style>
+
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --bg-light: #f5f3ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { background-color: var(--bg-light); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Navigation */
+        .sidebar { 
+            width: 280px; background: var(--white); border-right: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; padding: 24px; z-index: 10; 
+        }
+        .brand { 
+            font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 32px; 
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-group { margin-bottom: 24px; }
+        .nav-label { 
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; 
+            color: var(--text-muted); margin-bottom: 8px; font-weight: 600; 
+        }
+        .nav-item { 
+            display: block; width: 100%; text-align: left; padding: 10px 16px; margin-bottom: 4px; 
+            border-radius: 8px; border: none; background: transparent; color: var(--text-main); 
+            cursor: pointer; transition: all 0.2s; font-size: 0.95rem; font-weight: 500;
+        }
+        .nav-item:hover { background: #f5f3ff; color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; }
+
+        /* Developer Profile */
+        .dev-profile { 
+            margin-top: auto; padding-top: 24px; border-top: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .dev-info { display: flex; align-items: center; gap: 12px; }
+        .dev-avatar { 
+            width: 40px; height: 40px; background: var(--primary); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+        }
+        .dev-name { font-weight: 600; font-size: 0.95rem; line-height: 1.3; }
+        .dev-title { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Main Content Area */
+        .main-content { flex: 1; overflow-y: auto; padding: 32px; position: relative; }
+        .page-header { margin-bottom: 32px; }
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: var(--primary-dark); }
+        .page-subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* Semester Tabs */
+        .semester-tabs { 
+            display: flex; gap: 8px; margin-bottom: 24px; background: white; 
+            padding: 4px; border-radius: 8px; width: fit-content; border: 1px solid #e2e8f0;
+        }
+        .sem-tab { 
+            padding: 8px 24px; border-radius: 6px; border: none; background: transparent; 
+            font-weight: 600; cursor: pointer; color: var(--text-muted); transition: 0.2s;
+        }
+        .sem-tab.active { background: var(--primary); color: white; }
+
+        /* Card & Grid System */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+        .card { 
+            background: var(--white); border-radius: var(--radius); padding: 24px; 
+            box-shadow: var(--shadow); border: 1px solid #e2e8f0; margin-bottom: 24px;
+        }
+        .card h3 { font-size: 1.25rem; margin-bottom: 16px; color: var(--primary-dark); border-bottom: 2px solid #f5f3ff; padding-bottom: 8px;}
+        .card p, .card li { line-height: 1.6; color: var(--text-muted); margin-bottom: 12px; }
+        .card ul { padding-left: 20px; }
+
+        /* Interactive Elements */
+        .btn { 
+            display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; 
+            border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            text-decoration: none; font-size: 0.95rem;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Simulation / Interactive Area */
+        .sim-container { 
+            background: #0f172a; border-radius: var(--radius); overflow: hidden; 
+            position: relative; aspect-ratio: 16/9; margin-bottom: 24px; border: 1px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: white;
+        }
+        
+        /* RESPONSIVE TABLE WRAPPER (PERBAIKAN UTAMA) */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .table-responsive table {
+            width: 100%;
+            min-width: 600px; /* Memaksa tabel tetap lebar agar tidak gepeng di HP */
+            border-collapse: collapse;
+            white-space: nowrap; /* Mencegah teks turun baris sembarangan */
+        }
+        .table-responsive th, .table-responsive td {
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .table-responsive th { background: #f8fafc; color: var(--primary-dark); font-weight: 600; }
+
+        /* Visitor Counter Badge */
+        .visitor-badge {
+            position: fixed; bottom: 20px; right: 20px; 
+            background: var(--white); padding: 8px 16px; border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.85rem; font-weight: 600;
+            color: var(--primary); border: 1px solid #e2e8f0; z-index: 1000;
+            display: flex; align-items: center; gap: 8px;
+        }
+        
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .badge { 
+            display: inline-block; padding: 4px 12px; border-radius: 999px; 
+            font-size: 0.75rem; font-weight: 600; background: #f5f3ff; color: var(--primary-dark); 
+            margin-right: 8px; margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e2e8f0; padding: 16px; }
+            .nav-group { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 0; padding-bottom: 8px; }
+            .nav-label { display: none; }
+            .nav-item { white-space: nowrap; width: auto; margin-bottom: 0; }
+            .dev-profile { flex-direction: row; align-items: center; border-top: none; padding-top: 0; margin-top: 16px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+        <a href="index.html" class="brand">✒️ PenaVisual</a>
+        
+        <div class="nav-group">
+            <div class="nav-label">Komponen Kurikulum</div>
+            <button class="nav-item active" onclick="showSection('cp')">Capaian Pembelajaran (CP)</button>
+            <button class="nav-item" onclick="showSection('atp')">Alur Tujuan (ATP)</button>
+            <button class="nav-item" onclick="showSection('modul')">Modul Ajar</button>
+            <button class="nav-item" onclick="showSection('lkpd')">LKPD & Simulasi</button>
+            <button class="nav-item" onclick="showSection('rubrik')">Rubrik Penilaian</button>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">Administrasi Guru</div>
+            <button class="nav-item" onclick="showSection('prota')">Program Tahunan</button>
+            <button class="nav-item" onclick="showSection('promes')">Program Semester</button>
+            <button class="nav-item" onclick="showSection('kalender')">Kalender Akademik Jabar</button>
+        </div>
+
+        <!-- DEVELOPER PROFILE SECTION -->
+        <div class="dev-profile">
+            <div class="dev-info">
+                <div class="dev-avatar">DNH</div>
+                <div>
+                    <div class="dev-name">Dicky Nofyan Hidayat</div>
+                    <div class="dev-title">ST., Gr.</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- SEMESTER TABS -->
+        <div class="semester-tabs">
+            <button class="sem-tab active" onclick="switchSemester(1)">Semester 1 (Ganjil)</button>
+            <button class="sem-tab" onclick="switchSemester(2)">Semester 2 (Genap)</button>
+        </div>
+
+        <!-- SECTION: CAPAIAN PEMBELAJARAN -->
+        <section id="sec-cp" class="content-section">
+            <div class="page-header">
+                <h1 class="page-title">Capaian Pembelajaran (CP)</h1>
+                <p class="page-subtitle" id="cp-phase">Fase E - Semester Ganjil | KKA</p>
+            </div>
+            <div class="card">
+                <h3 id="cp-element">Elemen: Berpikir Komputasional & Literasi Digital</h3>
+                <p id="cp-text">Peserta didik mampu menerapkan prinsip dekomposisi, pengenalan pola, abstraksi, dan algoritma dalam memecahkan masalah sehari-hari. Selain itu, peserta didik mampu membuat prompt engineering yang efektif untuk menghasilkan konten teks atau gambar menggunakan AI Generatif.</p>
+                
+                <div style="margin-top: 24px;" id="cp-badges">
+                    <span class="badge">Dekomposisi</span>
+                    <span class="badge">Pengenalan Pola</span>
+                    <span class="badge">Prompt Engineering</span>
+                    <span class="badge">AI Generatif</span>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="showSection('lkpd')">Mulai Eksplorasi & LKPD</button>
+                    <button class="btn btn-outline" onclick="showSection('modul')">Lihat Modul Ajar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: ALUR TUJUAN PEMBELAJARAN -->
+        <section id="sec-atp" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Alur Tujuan Pembelajaran (ATP)</h1>
+                <p class="page-subtitle" id="atp-phase">Semester Ganjil - Kelas X SMK/SMA</p>
+            </div>
+            <div class="card">
+                <h3>Peta Perjalanan Belajar</h3>
+                <div id="atp-list" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;"></div>
+            </div>
+        </section>
+
+        <!-- SECTION: MODUL AJAR -->
+        <section id="sec-modul" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Modul Ajar Berdiferensiasi</h1>
+                <p class="page-subtitle" id="modul-topic">Topik: Berpikir Komputasional & Prompting</p>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Komponen Inti</h3>
+                    <p id="modul-inti"></p>
+                </div>
+                <div class="card">
+                    <h3>Diferensiasi Proses</h3>
+                    <ul id="modul-diff"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: LKPD & SIMULASI -->
+        <section id="sec-lkpd" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">LKPD Digital & Simulasi</h1>
+                <p class="page-subtitle" id="lkpd-title">Eksplorasi Prompt Engineering & Logika Algoritma</p>
+            </div>
+            <div class="sim-container" id="sim-wrapper"></div>
+            <div class="card">
+                <h3>Lembar Kerja Peserta Didik</h3>
+                <p id="lkpd-instruction"></p>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Aktivitas / Variabel</th><th>Hasil Observasi</th><th>Bukti</th></tr></thead>
+                        <tbody id="lkpd-tbody"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary" onclick="alert('Data LKPD berhasil disimpan!')">Simpan LKPD</button>
+                <button class="btn btn-outline" onclick="window.print()">🖨️ Cetak PDF</button>
+            </div>
+        </section>
+
+        <!-- SECTION: RUBRIK PENILAIAN -->
+        <section id="sec-rubrik" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Rubrik Penilaian Autentik</h1>
+                <p class="page-subtitle" id="rubrik-phase">Asesmen Praktik Semester Ganjil</p>
+            </div>
+            <div class="card">
+                <h3>Rubrik Keterampilan Praktikum</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th style="width:30%">Kriteria</th><th style="width:23%">Sangat Baik (4)</th><th style="width:23%">Baik (3)</th><th style="width:24%">Perlu Bimbingan (2)</th></tr></thead>
+                        <tbody id="rubrik-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PROGRAM TAHUNAN -->
+        <section id="sec-prota" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Program Tahunan (Prota)</h1>
+                <p class="page-subtitle">Tahun Pelajaran 2025/2026 - KKA Fase E</p>
+            </div>
+            <div class="card">
+                <h3>Alokasi Waktu Per Semester</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Semester</th><th>Materi Pokok</th><th>Alokasi Waktu (JP)</th><th>Keterangan</th></tr></thead>
+                        <tbody>
+                            <tr><td>Ganjil</td><td>Berpikir Komputasional & Prompt Engineering</td><td>36 JP (18 Pertemuan)</td><td>Fokus CT & AI Generatif</td></tr>
+                            <tr><td>Genap</td><td>Etika AI, Analisis Data & Algoritma PLUG/UNPLUG</td><td>36 JP (18 Pertemuan)</td><td>Fokus Etika & Pemrograman</td></tr>
+                            <tr><td colspan="2"><strong>Total Jam Pelajaran per Tahun</strong></td><td><strong>72 JP</strong></td><td>2 JP/Minggu</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak Prota</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PROGRAM SEMESTER -->
+        <section id="sec-promes" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Program Semester (Promes)</h1>
+                <p class="page-subtitle" id="promes-phase">Semester Ganjil - KKA Fase E</p>
+            </div>
+            <div class="card">
+                <h3>Distribusi Materi per Bulan</h3>
+                <div class="table-responsive">
+                    <table id="promes-table">
+                        <thead><tr><th>Bulan</th><th>Materi / Kegiatan</th><th>Minggu Ke-</th><th>Status</th></tr></thead>
+                        <tbody id="promes-tbody"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="window.print()">️ Cetak Promes</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: KALENDER AKADEMIK JAWA BARAT -->
+        <section id="sec-kalender" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Kalender Pendidikan Jawa Barat</h1>
+                <p class="page-subtitle">Tahun Pelajaran 2025/2026 (Permendikbudristek No. 27/2024)</p>
+            </div>
+            <div class="card">
+                <h3>Jadwal Penting Semester Aktif</h3>
+                <div id="kalender-content" style="line-height: 2; color: var(--text-muted);"></div>
+                
+                <div style="margin-top: 32px; padding: 20px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #d97706;">
+                    <h4 style="color: #92400e; margin-bottom: 8px;">⚠️ Catatan Penting</h4>
+                    <p style="font-size: 0.9rem; color: #78350f;">Kalender ini disusun berdasarkan pedoman Dinas Pendidikan Provinsi Jawa Barat. Hari libur nasional dan cuti bersama mengikuti SKB 3 Menteri.</p>
+                </div>
+                
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak Kalender</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- VISITOR COUNTER BADGE -->
+    <div class="visitor-badge">
+        ️ Pengunjung: <span id="visitor-count">Memuat...</span>
+    </div>
+
+    <script>
+        // --- DATA KURIKULUM PER SEMESTER ---
+        const semData = {
+            1: {
+                phase: "Fase E - Semester Ganjil",
+                cpElement: "Elemen: Berpikir Komputasional & Literasi Digital",
+                cpText: "Peserta didik mampu menerapkan prinsip dekomposisi, pengenalan pola, abstraksi, dan algoritma. Mampu membuat prompt engineering untuk produksi konten video/gambar menggunakan AI Generatif.",
+                badges: ["Dekomposisi", "Pola & Abstraksi", "Prompt Engineering", "AI Generatif"],
+                atp: [
+                    "Minggu 1-2: Konsep Dasar CT (Dekomposisi, Pola, Abstraksi, Algoritma)",
+                    "Minggu 3: Studi Kasus Penerapan CT dalam Kehidupan Sehari-hari",
+                    "Minggu 4-5: Teknik & Syarat Membuat Prompt AI (Bahasa Sendiri)",
+                    "Minggu 6-7: Produksi Konten Gambar/Video dengan Canva AI/Gemini",
+                    "Minggu 8: Prompt Engineering Lanjutan & Etika Dasar"
+                ],
+                modulTopic: "Topik: Berpikir Komputasional & Prompting",
+                modulInti: "<strong>Tujuan:</strong> Menyusun prompt terstruktur & menerapkan 4 pilar CT.<br><strong>Media:</strong> Simulator Prompt & Kartu Aktivitas Unplugged<br><strong>Durasi:</strong> 2 x 45 Menit",
+                modulDiff: "<li><strong>Level Dasar:</strong> Identifikasi pola sederhana & template prompt dasar.</li><li><strong>Level Lanjut:</strong> Dekomposisi masalah nyata & Chain-of-Thought prompting.</li>",
+                lkpdTitle: "Eksplorasi Prompt Engineering & Logika Algoritma",
+                lkpdInstruction: "Coba berbagai variasi prompt pada simulator di bawah, lalu analisis bagaimana perubahan kata kunci mempengaruhi output AI.",
+                lkpdRows: `<tr><td>Kata Kunci Utama dalam Prompt</td><td><input type="text" placeholder="Contoh: Cyberpunk..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Output Simulator</td></tr><tr><td>Langkah Dekomposisi Masalah</td><td><input type="text" placeholder="Pecah masalah..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Diagram CT</td></tr>`,
+                rubrikPhase: "Asesmen Praktik Semester Ganjil",
+                rubrikRows: `<tr><td><strong>Penerapan 4 Pilar CT</strong></td><td>Mampu mendekomposisi, menemukan pola, & menyusun algoritma solusi dengan runtut.</td><td>Mampu menerapkan 3 dari 4 pilar dengan benar.</td><td>Belum mampu memisahkan masalah menjadi bagian kecil.</td></tr><tr><td><strong>Kualitas Prompt Engineering</strong></td><td>Prompt spesifik, kontekstual, & menghasilkan output relevan tanpa revisi.</td><td>Prompt cukup jelas namun butuh 1-2 kali revisi.</td><td>Prompt terlalu umum & output tidak sesuai harapan.</td></tr>`,
+                simType: "prompt-engineering",
+                promes: [
+                    {bulan: "Juli", materi: "MPLS & Pengenalan CT", minggu: "1-2", status: "Selesai"},
+                    {bulan: "Agustus", materi: "Dekomposisi & Pola + Prompt Dasar", minggu: "3-6", status: "Berjalan"},
+                    {bulan: "September", materi: "Produksi Konten AI & Evaluasi Tengah Semester", minggu: "7-10", status: "Rencana"},
+                    {bulan: "Oktober", materi: "Prompt Lanjutan & Ujian Akhir Semester Ganjil", minggu: "11-14", status: "Rencana"}
+                ],
+                kalender: `
+                    <strong> Juli 2025:</strong> Masa Pengenalan Lingkungan Sekolah (MPLS) & Awal Semester Ganjil<br>
+                    <strong> Agustus 2025:</strong> KBM Regular + Libur Nasional (17 Agt)<br>
+                    <strong>📅 September 2025:</strong> KBM Regular + Penilaian Tengah Semester (PTS)<br>
+                    <strong>📅 Oktober 2025:</strong> KBM Regular + Ujian Akhir Semester Ganjil (PAS)<br>
+                    <strong> November 2025:</strong> Rapor Semester Ganjil & Libur Semester
+                `
+            },
+            2: {
+                phase: "Fase E - Semester Genap",
+                cpElement: "Elemen: Literasi & Etika AI, Analisis Data, Algoritma Pemrograman",
+                cpText: "Peserta didik mampu menganalisis produk AI, memahami etika kecerdasan buatan, serta menerapkan metode pembelajaran PLUG dan UNPLUG dalam algoritma pemrograman.",
+                badges: ["Etika AI", "Analisis Produk AI", "Metode PLUG", "Metode UNPLUG", "Algoritma Aplikasi"],
+                atp: [
+                    "Minggu 1-2: Analisis Produk AI & Perbandingan Generatif vs Kompensasinal",
+                    "Minggu 3: Etika AI & Bias Data (Modul Pelajaran 5)",
+                    "Minggu 4: Metode UNPLUG (Kertas, Gambar, Gerak Badan)",
+                    "Minggu 5-6: Metode PLUG (Penggunaan Perangkat/Gawai)",
+                    "Minggu 7-8: Menerapkan Algoritma Pemrograman untuk Aplikasi Sederhana"
+                ],
+                modulTopic: "Topik: Etika AI & Algoritma PLUG/UNPLUG",
+                modulInti: "<strong>Tujuan:</strong> Membedakan AI Generatif & Kompensasinal, serta menyusun algoritma via UNPLUG/PLUG.<br><strong>Media:</strong> Flowchart Builder & Demo Chatbot<br><strong>Durasi:</strong> 4 x 45 Menit",
+                modulDiff: "<li><strong>Level Dasar:</strong> Mengikuti instruksi UNPLUG & menulis pseudocode sederhana.</li><li><strong>Level Lanjut:</strong> Mengevaluasi bias etika AI & mengonversi flowchart ke kode nyata.</li>",
+                lkpdTitle: "Analisis Etika AI & Penyusunan Algoritma",
+                lkpdInstruction: "Amati dua contoh output AI di simulator, tentukan mana yang etis. Lalu susun flowchart untuk algoritma login aplikasi.",
+                lkpdRows: `<tr><td>Ciri AI Generatif vs Kompensasinal</td><td><input type="text" placeholder="Jelaskan perbedaan..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Tabel Perbandingan</td></tr><tr><td>Langkah Algoritma Login Aplikasi</td><td><input type="text" placeholder="1. Input user... 2. Cek DB..." style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;"></td><td>Pseudocode</td></tr>`,
+                rubrikPhase: "Asesmen Praktik Semester Genap",
+                rubrikRows: `<tr><td><strong>Analisis Produk AI</strong></td><td>Mampu membedakan jenis AI & mengidentifikasi bias dengan argumen kuat.</td><td>Mampu membedakan jenis AI namun analisis bias dangkal.</td><td>Salah mengidentifikasi jenis AI atau mengabaikan etika.</td></tr><tr><td><strong>Metode UNPLUG</strong></td><td>Flowchart/pseudocode logis, simbol standar, & mudah dipahami orang lain.</td><td>Logika benar namun simbol tidak baku.</td><td>Alur algoritma terputus atau ambigu.</td></tr>`,
+                simType: "ai-ethics-analyzer",
+                promes: [
+                    {bulan: "Januari", materi: "Awal Semester Genap & Analisis Produk AI", minggu: "1-3", status: "Rencana"},
+                    {bulan: "Februari", materi: "Etika AI + Metode UNPLUG", minggu: "4-7", status: "Rencana"},
+                    {bulan: "Maret", materi: "Metode PLUG + PTS", minggu: "8-11", status: "Rencana"},
+                    {bulan: "April", materi: "Algoritma Aplikasi + PAS Genap", minggu: "12-15", status: "Rencana"}
+                ],
+                kalender: `
+                    <strong> Januari 2026:</strong> Awal Semester Genap + Libur Tahun Baru Imlek<br>
+                    <strong> Februari 2026:</strong> KBM Regular + Libur Isra Mi'raj<br>
+                    <strong>📅 Maret 2026:</strong> KBM Regular + Penilaian Tengah Semester (PTS)<br>
+                    <strong>📅 April 2026:</strong> KBM Regular + Ujian Akhir Semester Genap (PAS)<br>
+                    <strong> Mei-Juni 2026:</strong> Rapor Semester Genap & Libur Akhir Tahun Ajaran
+                `
+            }
+        };
+
+        let currentSem = 1;
+
+        // --- NAVIGATION LOGIC ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(sectionId === 'lkpd') renderSimulation();
+            if(sectionId === 'promes') renderPromes();
+            if(sectionId === 'kalender') renderKalender();
+        }
+
+        function switchSemester(sem) {
+            currentSem = sem;
+            document.querySelectorAll('.sem-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const data = semData[sem];
+            
+            document.getElementById('cp-phase').textContent = data.phase + " | KKA";
+            document.getElementById('cp-element').textContent = data.cpElement;
+            document.getElementById('cp-text').textContent = data.cpText;
+            document.getElementById('cp-badges').innerHTML = data.badges.map(b => `<span class="badge">${b}</span>`).join('');
+
+            document.getElementById('atp-phase').textContent = data.phase.split('-')[0] + " - Kelas X SMK/SMA";
+            document.getElementById('atp-list').innerHTML = data.atp.map((item, i) => `
+                <div style="padding: 16px; background: ${i===3 || i===5 ? '#f5f3ff' : '#f8fafc'}; border-radius: 8px; border-left: 4px solid ${i===3 || i===5 ? 'var(--primary)' : '#cbd5e1'};">
+                    <strong>${item}</strong> ${i===3 || i===5 ? '<em>(Fokus Saat Ini)</em>' : ''}
+                </div>
+            `).join('');
+
+            document.getElementById('modul-topic').textContent = data.modulTopic;
+            document.getElementById('modul-inti').innerHTML = data.modulInti;
+            document.getElementById('modul-diff').innerHTML = data.modulDiff;
+
+            document.getElementById('lkpd-title').textContent = data.lkpdTitle;
+            document.getElementById('lkpd-instruction').textContent = data.lkpdInstruction;
+            document.getElementById('lkpd-tbody').innerHTML = data.lkpdRows;
+
+            document.getElementById('rubrik-phase').textContent = data.rubrikPhase;
+            document.getElementById('rubrik-tbody').innerHTML = data.rubrikRows;
+
+            document.getElementById('promes-phase').textContent = data.phase + " - KKA Fase E";
+
+            if(!document.getElementById('sec-lkpd').classList.contains('hidden')) renderSimulation();
+        }
+
+        function renderPromes() {
+            const tbody = document.getElementById('promes-tbody');
+            tbody.innerHTML = semData[currentSem].promes.map(p => `
+                <tr>
+                    <td><strong>${p.bulan}</strong></td>
+                    <td>${p.materi}</td>
+                    <td>${p.minggu}</td>
+                    <td><span style="padding:4px 10px; border-radius:12px; font-size:0.8rem; background:${p.status==='Selesai'?'#dcfce7':p.status==='Berjalan'?'#fef3c7':'#f1f5f9'}; color:${p.status==='Selesai'?'#166534':p.status==='Berjalan'?'#92400e':'#475569'}">${p.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderKalender() {
+            document.getElementById('kalender-content').innerHTML = semData[currentSem].kalender;
+        }
+
+        // --- SIMULATION RENDERER ---
+        function renderSimulation() {
+            const wrapper = document.getElementById('sim-wrapper');
+            
+            if (semData[currentSem].simType === 'prompt-engineering') {
+                wrapper.innerHTML = `
+                    <div style="text-align: center; padding: 20px; width: 100%; max-width: 600px;">
+                        <h3 style="margin-bottom: 16px;">🎨 Simulator Prompt Engineering</h3>
+                        <textarea id="prompt-input" rows="3" style="width:100%; padding:12px; border-radius:8px; border:none; margin-bottom:12px; font-family:inherit;" placeholder="Masukkan promptmu di sini..."></textarea>
+                        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:20px;">
+                            <button class="btn btn-outline" style="background:white; color:black;" onclick="setStyle('realistic')">Realistis</button>
+                            <button class="btn btn-outline" style="background:white; color:black;" onclick="setStyle('cartoon')">Kartun</button>
+                            <button class="btn btn-outline" style="background:white; color:black;" onclick="setStyle('cyberpunk')">Cyberpunk</button>
+                        </div>
+                        <button class="btn btn-primary" style="width:100%;" onclick="generateAIResponse()">✨ Generate Output</button>
+                        <div id="ai-output-box" style="margin-top: 24px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 8px; min-height: 80px; display: flex; align-items: center; justify-content: center; border: 2px dashed rgba(255,255,255,0.3);">
+                            <span style="opacity: 0.6;">Output AI akan muncul di sini...</span>
+                        </div>
+                    </div>
+                `;
+            } else if (semData[currentSem].simType === 'ai-ethics-analyzer') {
+                wrapper.innerHTML = `
+                    <div style="text-align: center; padding: 20px; width: 100%;">
+                        <h3 style="margin-bottom: 16px;">⚖️ Simulator Analisis Etika AI</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 700px; margin: 0 auto;">
+                            <div style="background: white; color: black; padding: 16px; border-radius: 8px; text-align: left;">
+                                <div style="font-weight:bold; margin-bottom:8px; color:#ef4444;">Output A (Berpotensi Bias)</div>
+                                <p style="font-size:0.9rem;">"Hanya laki-laki yang cocok menjadi pemimpin teknis karena mereka lebih logis."</p>
+                            </div>
+                            <div style="background: white; color: black; padding: 16px; border-radius: 8px; text-align: left;">
+                                <div style="font-weight:bold; margin-bottom:8px; color:#22c55e;">Output B (Netral & Inklusif)</div>
+                                <p style="font-size:0.9rem;">"Kepemimpinan teknis bergantung pada kompetensi, bukan gender."</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+                            <button class="btn btn-outline" style="background:white; color:black;" onclick="analyzeEthics('A')">Pilih A</button>
+                            <button class="btn btn-outline" style="background:white; color:black;" onclick="analyzeEthics('B')">Pilih B</button>
+                        </div>
+                        <div id="ethics-feedback" style="margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.1); border-radius: 8px; min-height: 60px; display: none;"></div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- SIMULATOR FUNCTIONS ---
+        let currentStyle = '';
+        function setStyle(style) {
+            currentStyle = style;
+            document.querySelectorAll('#sim-wrapper .btn-outline').forEach(b => b.style.borderColor = '#e2e8f0');
+            event.target.style.borderColor = 'var(--primary)';
+        }
+
+        function generateAIResponse() {
+            const prompt = document.getElementById('prompt-input').value;
+            const outputBox = document.getElementById('ai-output-box');
+            if (!prompt) { outputBox.innerHTML = '<span style="color:#fca5a5;">⚠️ Silakan masukkan prompt!</span>'; return; }
+            outputBox.innerHTML = '<span style="opacity:0.8;">Sedang memproses...</span>';
+            setTimeout(() => {
+                let response = "";
+                if (currentStyle === 'realistic') response = `[Gambar Realistis]: "${prompt}" dengan pencahayaan natural & tekstur detail.`;
+                else if (currentStyle === 'cartoon') response = `🎨 [Gaya Kartun]: "${prompt}" dengan garis tebal & warna cerah.`;
+                else if (currentStyle === 'cyberpunk') response = `🌃 [Cyberpunk]: "${prompt}" dengan neon ungu-biru & atmosfer distopia.`;
+                else response = `🤖 [Default]: "${prompt}" dalam gaya standar AI.`;
+                outputBox.innerHTML = `<div style="text-align:left; width:100%;"><strong>✅ Output Generated:</strong><br><br>${response}</div>`;
+            }, 800);
+        }
+
+        function analyzeEthics(choice) {
+            const feedback = document.getElementById('ethics-feedback');
+            feedback.style.display = 'block';
+            if (choice === 'B') {
+                feedback.innerHTML = '<span style="color:#86efac; font-weight:bold;">✅ Benar! Output B lebih etis.</span><br><span style="font-size:0.9rem; margin-top:8px; display:block;">Output B menghindari stereotip gender, bersifat inklusif, dan berfokus pada kompetensi.</span>';
+                feedback.style.border = '1px solid #22c55e';
+            } else {
+                feedback.innerHTML = '<span style="color:#fca5a5; font-weight:bold;">❌ Kurang Tepat. Output A mengandung bias.</span><br><span style="font-size:0.9rem; margin-top:8px; display:block;">Output A melanggengkan stereotip gender yang tidak berdasar secara ilmiah.</span>';
+                feedback.style.border = '1px solid #ef4444';
+            }
+        }
+
+        // --- VISITOR COUNTER (COUNTAPI.XYZ) ---
+        fetch('https://api.countapi.xyz/hit/penavisual-kka-jabar/visits')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('visitor-count').textContent = data.count.toLocaleString('id-ID');
+            })
+            .catch(err => {
+                document.getElementById('visitor-count').textContent = "Offline";
+            });
+
+        // Initialize default view
+        showSection('cp');
+        document.querySelector('.nav-group:first-child .nav-item').classList.add('active');
+    </script>
+
+    <!-- OBFUSCATED PROTECTION SCRIPT -->
+    <script>
+        // Fungsi proteksi anti-copy yang di-obfuscate
+        (function(){
+            // Mencegah Klik Kanan
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Mencegah Shortcut Keyboard Terlarang
+            document.addEventListener('keydown', e => {
+                // Ctrl+C, Ctrl+U, Ctrl+S, Ctrl+Shift+I, F12
+                if ((e.ctrlKey && ['c','u','s'].includes(e.key.toLowerCase())) || 
+                    (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') || 
+                    e.key === 'F12') {
+                    e.preventDefault();
+                    alert('⚠️ Konten PenaVisual dilindungi hak cipta!');
+                }
+            });
+
+            // Mencegah Inspect Element via Console Override
+            setInterval(() => {
+                const before = new Date().getTime();
+                debugger;
+                const after = new Date().getTime();
+                if (after - before > 100) {
+                    document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0f172a;color:white;font-family:sans-serif;"><h1> Akses Ditolak</h1><p>Upaya debugging terdeteksi. Halaman dikunci demi keamanan konten.</p></div>';
+                }
+            }, 1000);
+
+            // Mencegah Drag & Drop Gambar
+            document.addEventListener('dragstart', e => e.preventDefault());
+        })();
+    </script>
+</body>
+</html>
