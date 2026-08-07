@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatika Fase E - PenaVisual</title>
+    <style>
+        :root {
+            --primary: #059669; /* Hijau Informatika */
+            --primary-dark: #047857;
+            --bg-light: #f0fdf4;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { background-color: var(--bg-light); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Navigation */
+        .sidebar { 
+            width: 280px; background: var(--white); border-right: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; padding: 24px; z-index: 10; 
+        }
+        .brand { 
+            font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 32px; 
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-group { margin-bottom: 24px; }
+        .nav-label { 
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; 
+            color: var(--text-muted); margin-bottom: 8px; font-weight: 600; 
+        }
+        .nav-item { 
+            display: block; width: 100%; text-align: left; padding: 10px 16px; margin-bottom: 4px; 
+            border-radius: 8px; border: none; background: transparent; color: var(--text-main); 
+            cursor: pointer; transition: all 0.2s; font-size: 0.95rem; font-weight: 500;
+        }
+        .nav-item:hover { background: #ecfdf5; color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; }
+
+        /* Developer Profile */
+        .dev-profile { 
+            margin-top: auto; padding-top: 24px; border-top: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .dev-info { display: flex; align-items: center; gap: 12px; }
+        .dev-avatar { 
+            width: 40px; height: 40px; background: var(--primary); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+        }
+        .dev-name { font-weight: 600; font-size: 0.95rem; line-height: 1.3; }
+        .dev-title { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Main Content Area */
+        .main-content { flex: 1; overflow-y: auto; padding: 32px; position: relative; }
+        .page-header { margin-bottom: 32px; }
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: var(--primary-dark); }
+        .page-subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* Card & Grid System */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+        .card { 
+            background: var(--white); border-radius: var(--radius); padding: 24px; 
+            box-shadow: var(--shadow); border: 1px solid #e2e8f0; margin-bottom: 24px;
+        }
+        .card h3 { font-size: 1.25rem; margin-bottom: 16px; color: var(--primary-dark); border-bottom: 2px solid #ecfdf5; padding-bottom: 8px;}
+        .card p, .card li { line-height: 1.6; color: var(--text-muted); margin-bottom: 12px; }
+        .card ul { padding-left: 20px; }
+
+        /* Interactive Elements */
+        .btn { 
+            display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; 
+            border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            text-decoration: none; font-size: 0.95rem;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Simulation / Interactive Area */
+        .sim-container { 
+            background: #0f172a; border-radius: var(--radius); overflow: hidden; 
+            position: relative; aspect-ratio: 16/9; margin-bottom: 24px; border: 1px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: white;
+        }
+        
+        /* Rubric Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.9rem; }
+        th, td { padding: 12px; border: 1px solid #e2e8f0; text-align: left; }
+        th { background: #f8fafc; color: var(--primary-dark); font-weight: 600; }
+        
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .badge { 
+            display: inline-block; padding: 4px 12px; border-radius: 999px; 
+            font-size: 0.75rem; font-weight: 600; background: #ecfdf5; color: var(--primary-dark); 
+            margin-right: 8px; margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e2e8f0; padding: 16px; }
+            .nav-group { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 0; padding-bottom: 8px; }
+            .nav-label { display: none; }
+            .nav-item { white-space: nowrap; width: auto; margin-bottom: 0; }
+            .dev-profile { flex-direction: row; align-items: center; border-top: none; padding-top: 0; margin-top: 16px; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+        <a href="index.html" class="brand">✒️ PenaVisual</a>
+        
+        <div class="nav-group">
+            <div class="nav-label">Komponen Kurikulum</div>
+            <button class="nav-item active" onclick="showSection('cp')">Capaian Pembelajaran (CP)</button>
+            <button class="nav-item" onclick="showSection('atp')">Alur Tujuan (ATP)</button>
+            <button class="nav-item" onclick="showSection('modul')">Modul Ajar</button>
+            <button class="nav-item" onclick="showSection('lkpd')">LKPD & Simulasi</button>
+            <button class="nav-item" onclick="showSection('rubrik')">Rubrik Penilaian</button>
+        </div>
+
+        <!-- DEVELOPER PROFILE SECTION -->
+        <div class="dev-profile">
+            <div class="dev-info">
+                <div class="dev-avatar">DNH</div>
+                <div>
+                    <div class="dev-name">Dicky Nofyan Hidayat</div>
+                    <div class="dev-title">ST., Gr.</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- SECTION: CAPAIAN PEMBELAJARAN -->
+        <section id="sec-cp" class="content-section">
+            <div class="page-header">
+                <h1 class="page-title">Capaian Pembelajaran (CP)</h1>
+                <p class="page-subtitle">Fase E - Semester Ganjil | Informatika</p>
+            </div>
+            <div class="card">
+                <h3>Elemen: Komputer & Literasi Komputasional</h3>
+                <p>Peserta didik mampu memahami komponen sistem komputer (hardware dan software), melakukan manajemen file dasar, serta menganalisis topologi dan jenis jaringan komputer (PAN, LAN, MAN, WAN). Peserta didik juga mampu mengonversikan sistem bilangan digital dan memanfaatkan perkakas teknologi digital untuk produktivitas.</p>
+                
+                <div style="margin-top: 24px;">
+                    <span class="badge">System Komputer</span>
+                    <span class="badge">Manajemen File</span>
+                    <span class="badge">Topologi Jaringan</span>
+                    <span class="badge">Sistem Bilangan</span>
+                    <span class="badge">Aplikasi Perkantoran</span>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="showSection('lkpd')">Mulai Eksplorasi & LKPD</button>
+                    <button class="btn btn-outline" onclick="showSection('modul')">Lihat Modul Ajar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: ALUR TUJUAN PEMBELAJARAN -->
+        <section id="sec-atp" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Alur Tujuan Pembelajaran (ATP)</h1>
+                <p class="page-subtitle">Semester Ganjil - Kelas X SMK/SMA</p>
+            </div>
+            <div class="card">
+                <h3>Peta Perjalanan Belajar (8 Minggu)</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
+                        <strong>Minggu 1:</strong> Sejarah Komputer & Literasi Komputasional
+                    </div>
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
+                        <strong>Minggu 2:</strong> Komponen Hardware (Input, Process, Output)
+                    </div>
+                    <div style="padding: 16px; background: #ecfdf5; border-radius: 8px; border-left: 4px solid var(--primary); box-shadow: 0 0 0 2px var(--primary);">
+                        <strong>Minggu 3-4:</strong> Sistem Operasi & Manajemen File  <em>(Fokus Saat Ini)</em>
+                    </div>
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
+                        <strong>Minggu 5-6:</strong> Jaringan Dasar & Topologi (BUS, STAR, RING)
+                    </div>
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
+                        <strong>Minggu 7:</strong> Jenis Jaringan (PAN, LAN, MAN, WAN) & Sistem Bilangan
+                    </div>
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #cbd5e1;">
+                        <strong>Minggu 8:</strong> Pemanfaatan Perkakas Digital (MS Word)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: MODUL AJAR -->
+        <section id="sec-modul" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Modul Ajar Berdiferensiasi</h1>
+                <p class="page-subtitle">Topik: Sistem Operasi & Manajemen File</p>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Komponen Inti</h3>
+                    <p><strong>Tujuan:</strong> Peserta didik mampu mengelola file dan folder menggunakan sistem operasi.<br>
+                    <strong>Media:</strong> Simulator Manajemen File Virtual + Video Tutorial<br>
+                    <strong>Durasi:</strong> 2 x 45 Menit</p>
+                </div>
+                <div class="card">
+                    <h3>Diferensiasi Proses</h3>
+                    <ul>
+                        <li><strong>Level Dasar:</strong> Melakukan cut, copy, paste, dan rename file dengan panduan langkah demi langkah.</li>
+                        <li><strong>Level Menengah:</strong> Mengorganisir file ke dalam struktur folder yang logis tanpa panduan.</li>
+                        <li><strong>Level Lanjut:</strong> Menganalisis efisiensi penyimpanan dan menerapkan shortcut keyboard untuk manajemen massal.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: LKPD & SIMULASI -->
+        <section id="sec-lkpd" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">LKPD Digital & Simulasi</h1>
+                <p class="page-subtitle">Eksplorasi Manajemen File & Konversi Sistem Bilangan</p>
+            </div>
+
+            <!-- INTERACTIVE SIMULATION AREA -->
+            <div class="sim-container" id="sim-wrapper">
+                <div style="text-align: center; padding: 20px;">
+                    <h3 style="margin-bottom: 16px;">Simulator Konversi Sistem Bilangan</h3>
+                    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                        <input type="number" id="input-dec" placeholder="Desimal" style="padding: 10px; border-radius: 6px; border: none; width: 150px;">
+                        <button class="btn btn-primary" onclick="convertNumber()">Konversi</button>
+                    </div>
+                    <div id="result-box" style="margin-top: 24px; font-family: monospace; font-size: 1.2rem; line-height: 2;">
+                        Biner: <span id="res-bin" style="color: #4ade80;">-</span><br>
+                        Oktal: <span id="res-oct" style="color: #facc15;">-</span><br>
+                        Heksadesimal: <span id="res-hex" style="color: #60a5fa;">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIGITAL WORKSHEET FORM -->
+            <div class="card">
+                <h3>Lembar Kerja Peserta Didik</h3>
+                <p>Gunakan simulator di atas atau lakukan praktik langsung di laboratorium komputer, lalu lengkapi tabel berikut.</p>
+                <div style="overflow-x: auto; margin: 16px 0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aktivitas / Variabel</th>
+                                <th>Hasil Observasi / Jawaban</th>
+                                <th>Keterangan / Bukti</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Langkah mematikan komputer dengan benar</td>
+                                <td><input type="text" placeholder="Tuliskan langkah..." style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;"></td>
+                                <td>Screenshot / Foto</td>
+                            </tr>
+                            <tr>
+                                <td>Struktur folder yang dibuat</td>
+                                <td><input type="text" placeholder="Contoh: Dokumen/Tugas/Informatika" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;"></td>
+                                <td>Path direktori</td>
+                            </tr>
+                            <tr>
+                                <td>Konversi Bilangan Desimal 255</td>
+                                <td><input type="text" placeholder="Biner, Oktal, Hex" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;"></td>
+                                <td>Hasil Simulator</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary" onclick="alert('Data LKPD berhasil disimpan!')"> Simpan LKPD</button>
+                <button class="btn btn-outline" onclick="window.print()">️ Cetak PDF</button>
+            </div>
+        </section>
+
+        <!-- SECTION: RUBRIK PENILAIAN -->
+        <section id="sec-rubrik" class="content-section hidden">
+            <div class="page-header">
+                <h1 class="page-title">Rubrik Penilaian Autentik</h1>
+                <p class="page-subtitle">Asesmen Praktik Manajemen File & Literasi Digital</p>
+            </div>
+            <div class="card">
+                <h3>Rubrik Keterampilan Praktikum</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Kriteria Penilaian</th>
+                            <th style="width: 23%;">Sangat Baik (4)</th>
+                            <th style="width: 23%;">Baik (3)</th>
+                            <th style="width: 24%;">Perlu Bimbingan (2)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Prosedur Shutdown</strong></td>
+                            <td>Melakukan shutdown sesuai SOP tanpa kesalahan dan menjelaskan alasannya.</td>
+                            <td>Melakukan shutdown sesuai SOP tanpa kesalahan.</td>
+                            <td>Melakukan shutdown namun perlu diingatkan atau ada langkah yang terlewat.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Manajemen File</strong></td>
+                            <td>Struktur folder sangat rapi, penamaan konsisten, dan menggunakan shortcut efektif.</td>
+                            <td>Struktur folder rapi dan penamaan file konsisten.</td>
+                            <td>Folder terbentuk namun penamaan acak atau struktur tidak logis.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Konversi Sistem Bilangan</strong></td>
+                            <td>Mampu mengonversi desimal ke biner, oktal, dan heksadesimal dengan tepat dan cepat.</td>
+                            <td>Mampu mengonversi dengan tepat namun membutuhkan waktu lama.</td>
+                            <td>Hasil konversi salah atau belum mampu melakukan konversi mandiri.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pemanfaatan MS Word</strong></td>
+                            <td>Menguasai formatting, layout, dan fitur lanjutan secara mandiri.</td>
+                            <td>Mampu membuat dokumen standar dengan formatting dasar.</td>
+                            <td>Hanya mampu mengetik teks tanpa formatting yang berarti.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- NAVIGATION LOGIC ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-group .nav-item').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // --- SIMPLE NUMBER CONVERTER SIMULATION ---
+        function convertNumber() {
+            const dec = parseInt(document.getElementById('input-dec').value);
+            if (isNaN(dec)) {
+                alert("Masukkan angka desimal yang valid!");
+                return;
+            }
+            document.getElementById('res-bin').textContent = dec.toString(2);
+            document.getElementById('res-oct').textContent = dec.toString(8);
+            document.getElementById('res-hex').textContent = dec.toString(16).toUpperCase();
+        }
+
+        // Initialize default view
+        showSection('cp');
+        document.querySelector('.nav-group .nav-item').classList.add('active');
+    </script>
+</body>
+</html>
