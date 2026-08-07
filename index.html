@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PenaVisual - Laboratorium Virtual Kurikulum Merdeka</title>
+    
+    <!-- PROTEKSI ANTI-COPY DASAR -->
+    <style>
+        body { 
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            -webkit-touch-callout: none;
+        }
+        img { pointer-events: none; }
+    </style>
+
     <style>
         :root {
             --primary: #2563eb;
@@ -18,7 +31,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
         
-        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; }
+        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
         /* NAVIGATION */
         nav { 
@@ -40,7 +53,7 @@
         .hero { 
             padding: 80px 5% 60px; text-align: center; max-width: 900px; margin: 0 auto; 
         }
-        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; line-height: 1.2; color: var(--text-main); }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 20px; line-height: 1.2; color: var(--text-main); }
         .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 32px; }
         .hero-badges { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
         .badge { background: #dbeafe; color: var(--primary-dark); padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
@@ -111,6 +124,15 @@
         footer { background: var(--white); padding: 40px 5%; text-align: center; border-top: 1px solid #e2e8f0; margin-top: 60px; }
         .footer-dev { font-size: 0.9rem; color: var(--text-muted); margin-top: 16px; }
 
+        /* VISITOR COUNTER BADGE */
+        .visitor-badge {
+            position: fixed; bottom: 20px; right: 20px; 
+            background: var(--white); padding: 8px 16px; border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.85rem; font-weight: 600;
+            color: var(--primary); border: 1px solid #e2e8f0; z-index: 1000;
+            display: flex; align-items: center; gap: 8px;
+        }
+
         @media (max-width: 768px) {
             .hero h1 { font-size: 2rem; }
             .nav-links { display: none; }
@@ -119,11 +141,11 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
 
     <!-- NAVBAR -->
     <nav>
-        <a href="#" class="logo">✒️ PenaVisual</a>
+        <a href="#" class="logo">️ PenaVisual</a>
         <div class="nav-links">
             <a href="#mapel">Mata Pelajaran</a>
             <a href="#kurikulum">Perangkat Ajar</a>
@@ -189,7 +211,7 @@
 
             <!-- MATEMATIKA -->
             <div class="subject-card matematika">
-                <div class="card-icon"></div>
+                <div class="card-icon">📐</div>
                 <h3 class="card-title">Matematika</h3>
                 <p class="card-desc">Visualisasi fungsi kuadrat, transformasi geometri, dan statistika data dalam lingkungan grafis dinamis.</p>
                 <div class="card-tags">
@@ -202,7 +224,7 @@
 
             <!-- KIMIA -->
             <div class="subject-card kimia">
-                <div class="card-icon">⚗️</div>
+                <div class="card-icon">️</div>
                 <h3 class="card-title">Kimia</h3>
                 <p class="card-desc">Jelajahi struktur atom, konfigurasi elektron, dan tabel periodik unsur dengan model partikel interaktif.</p>
                 <div class="card-tags">
@@ -255,6 +277,47 @@
         </div>
         <p style="margin-top: 24px; font-size: 0.8rem; color: #94a3b8;">© 2026 PenaVisual. All rights reserved.</p>
     </footer>
+
+    <!-- VISITOR COUNTER BADGE -->
+    <div class="visitor-badge">
+        👥 Pengunjung: <span id="visitor-count">Memuat...</span>
+    </div>
+
+    <!-- OBFUSCATED PROTECTION SCRIPT -->
+    <script>
+        (function(){
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if ((e.ctrlKey && ['c','u','s'].includes(e.key.toLowerCase())) || 
+                    (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') || 
+                    e.key === 'F12') {
+                    e.preventDefault();
+                    alert('⚠️ Konten PenaVisual dilindungi hak cipta!');
+                }
+            });
+            setInterval(() => {
+                const before = new Date().getTime();
+                debugger;
+                const after = new Date().getTime();
+                if (after - before > 100) {
+                    document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;"><h1>🔒 Akses Ditolak</h1><p>Upaya debugging terdeteksi. Halaman dikunci demi keamanan konten.</p></div>';
+                }
+            }, 1000);
+            document.addEventListener('dragstart', e => e.preventDefault());
+        })();
+    </script>
+
+    <!-- VISITOR COUNTER API -->
+    <script>
+        fetch('https://api.countapi.xyz/hit/penavisual-homepage-jabar/visits')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('visitor-count').textContent = data.count.toLocaleString('id-ID');
+            })
+            .catch(err => {
+                document.getElementById('visitor-count').textContent = "Offline";
+            });
+    </script>
 
 </body>
 </html>
